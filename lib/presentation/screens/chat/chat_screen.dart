@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
+import 'package:yes_no_app/presentation/providers/chat_provider.dart';
 import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/shared/message_field_box.dart';
@@ -23,10 +26,10 @@ class _AppBarView extends AppBar {
             padding: EdgeInsets.all(4.0),
             child: CircleAvatar(
               backgroundImage: NetworkImage(
-                  'https://www.stylist.co.uk/images/app/uploads/2022/06/01105352/jennifer-aniston-crop-1654077521-1390x1390.jpg?w=256&h=256&fit=max&auto=format%2Ccompress'),
+                  'https://photos5.appleinsider.com/gallery/54744-110774-51244-101250-50918-100550-siri-header-xl-xl-xl.jpg'),
             ),
           ),
-          title: const Text('Jennifer Aniston'),
+          title: const Text('Siri'),
           centerTitle: false,
         );
 }
@@ -34,6 +37,8 @@ class _AppBarView extends AppBar {
 class _ChatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final chatProvider = context.watch<ChatProvider>();
+
     return SafeArea(
       // SafeArea: Desplegar contenido en el cuerpo del dispositivo evita poner widgets en zonas reservadas del dispositivo
       child: Padding(
@@ -46,17 +51,25 @@ class _ChatView extends StatelessWidget {
             Expanded(
               // expandir widget a mayor cantidad del dispositivo
               child: ListView.builder(
-                itemCount: 100, // Cantidad de items a desplegar
+                controller: chatProvider.chatScrollController,
+                itemCount: chatProvider
+                    .messageList.length, // Cantidad de items a desplegar
                 itemBuilder: (context, index) {
-                  return (index % 2 == 0)
-                      ? const HerMessageBubble()
-                      : const MyMessageBubble();
+                  final message = chatProvider.messageList[index];
+
+                  return (message.fromWho == FromWho.hers)
+                      ? HerMessageBubble(message: message,)
+                      : MyMessageBubble(
+                          message: message,
+                        );
                 },
               ), // builder solo crea en el UI los elementos a mostrar
             ),
 
             /// Caja de texto de mensajes
-            const MessageFieldBox(),
+            MessageFieldBox(
+                // onValue: (value) => chatProvider.sendMessage(value),
+                onValue: chatProvider.sendMessage),
           ],
         ),
       ),
