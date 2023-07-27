@@ -1,6 +1,10 @@
 # yes_no_app
 
-A new Flutter project.
+Fun chat simulator made in Flutter where you can ask questions and it will respond with yes or no.
+
+# Demo
+
+https://github.com/pmadrigal95/flutter-YesNo-app/assets/23517022/2e7ff821-de2c-49fe-9572-f32584e51dd2
 
 ## Getting Started
 
